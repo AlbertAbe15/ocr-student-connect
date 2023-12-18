@@ -477,10 +477,17 @@ def sertifikat_kompetisi():
                                     "Tanggal Kompetisi": hasil_tanggal,
                                     "Capaian": hasil_capaian,
                                     "Tanda Tangan": hasil_tanda_tangan})
+        
                 else:
                     results.append({"message": "Tidak berhasil melakukan preprocessing pada salah satu halaman"})
-            return jsonify(results)
-        
+            combined_results = {key: False for key in results[0].keys()}
+            # Gabungkan setiap JSON dalam list.
+            for result in results:
+                for key, value in result.items():
+                    combined_results[key] = combined_results[key] or value
+            
+            return jsonify(combined_results)
+                    
         else:
             response = requests.get(image_url)
             if response.status_code == 200:
