@@ -7,4 +7,8 @@ fuzzywuzzy==0.18.0
 PyMuPDF==1.19.1
 pytesseract==0.3.8
 easyocr==1.4.1
+torch==2.1.0
+torchvision==0.16.0
+opencv-contrib-python==4.8.0.74
 opencv-python==4.8.0.74
+opencv-python-headless==4.8.1.78
