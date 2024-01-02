@@ -76,57 +76,44 @@ def convert_to_lowercase(data):
     else:
         return data
     
+
 def matching_data_surat(hasil, nama_mahasiswa, nrp, nama_departemen, skala):
-    results = {'Nama Mahasiswa': [], 'NRP': [], 'Nama Departemen': [], 'Tanda Tangan': [], 'Keperluan Lomba': []}
-    mahasiswa_results = []
-    nrp_results = []
-    departemen_results = []
-    tanda_tangan_results = []
-    keperluan_lomba_results = []
+    mahasiswa_results = ''
+    nrp_results = ''
+    departemen_results = ''
+    tanda_tangan_results = ''
+    keperluan_lomba_results = ''
     
     # Mencari hasil nama
-    pattern_nama_mahasiswa = re.compile(rf'\b{re.escape(nama_mahasiswa)}\b')
-    if pattern_nama_mahasiswa.search(hasil):
-        mahasiswa_results.append(True)
-    else:
-        mahasiswa_results.append(fuzz.ratio(nama_mahasiswa, hasil) > 70)
+    pattern_nama_mahasiswa = re.compile(r'\b{}\b'.format(re.escape(nama_mahasiswa)))
+    mahasiswa_results = bool(pattern_nama_mahasiswa.search(hasil))
 
     # Mencari hasil nrp
-    pattern_nrp = re.compile(rf'\b{re.escape(nrp)}\b')
-    if pattern_nrp.search(hasil):
-        nrp_results.append(True)
-    else:
-        nrp_results.append(fuzz.ratio(nrp, hasil) > 70)
+    pattern_nrp = re.compile(r'\b{}\b'.format(re.escape(str(nrp))))
+    nrp_results = bool(pattern_nrp.search(hasil))
 
     # Mencari departemen
-    pattern_departemen = re.compile(rf'\b{re.escape(nama_departemen)}\b')
-    if pattern_departemen.search(hasil):
-        departemen_results.append(True)
-    else:
-        departemen_results.append(fuzz.ratio(nama_departemen, hasil) > 70)   
+    pattern_departemen = re.compile(r'\b{}\b'.format(nama_departemen))
+    departemen_results = bool(pattern_departemen.search(hasil))
 
     # Mencari Tanda Tangan
     pejabat = "9999999"
-    if skala == 'nasional':
-        pejabat = r'Direktur Pendidikan\w*'
-    elif skala == 'internasional':
-        pejabat = r'Wakil Rektor\w*'
-        
+    if (skala == 'Nasional') | (skala =='Lokal'):
+        pejabat = r'Direktur Pendidikan|Dekan\w*|Wakil Rektor\w*|Direktur Kemahasiswaan'
+    elif skala == 'Internasional':
+        pejabat = r'Wakil Rektor\w*|Rektor\w*'
+
+
     regex_tanda_tangan = re.compile(pejabat, re.IGNORECASE)
-    if regex_tanda_tangan.search(hasil):
-        tanda_tangan_results.append(True)
-    else:
-        tanda_tangan_results.append(False)
+    tanda_tangan_results = bool(regex_tanda_tangan.search(hasil))
 
     # Keperluan lomba
-    kata_kunci = r'lomba\w*|peserta lomba\w*|kompetisi\w*'
+    kata_kunci = r'lomba\w*|peserta lomba\w*|kompetisi\w*|competition\w*|peserta\w*|finalis\w*|olimpiade\w*|kejuaraan\w*'
     pattern_keperluan = re.compile(kata_kunci, re.IGNORECASE)
-    if pattern_keperluan.search(hasil):
-        keperluan_lomba_results.append(True)
-    else:
-        keperluan_lomba_results.append(fuzz.ratio('keperluan lomba', hasil) > 70) 
+    keperluan_lomba_results = (bool(pattern_keperluan.search(hasil)))
 
-    return any(mahasiswa_results), any(nrp_results), any(departemen_results), any(tanda_tangan_results), any(keperluan_lomba_results)
+
+    return mahasiswa_results, nrp_results, departemen_results, tanda_tangan_results, keperluan_lomba_results
     
 def convert_date_format(date_obj):
     new_date_format = format_date(date_obj, format='d MMMM yyyy', locale='id_ID')
@@ -163,22 +150,42 @@ def preprocess_image(image):
 
 def preprocess_for_ocr(image):
 
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Image normalization - Normalize image between 0 and 255
+    normalized_image = cv2.normalize(image, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
     
-    # Adaptive thresholding
-    thresh = cv2.adaptiveThreshold(
-        gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
-    )
+    # Skew correction
+    gray = cv2.cvtColor(normalized_image, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 100, minLineLength=100, maxLineGap=10)
+    angle = 0.0
+    if lines is not None:
+        total_angle = 0.0
+        for line in lines:
+            x1, y1, x2, y2 = line[0]
+            angle += np.arctan2(y2 - y1, x2 - x1)
+            total_angle += 1
+        angle /= total_angle
+    rotation_matrix = cv2.getRotationMatrix2D((image.shape[1] / 2, image.shape[0] / 2), angle, 1)
+    rotated_image = cv2.warpAffine(image, rotation_matrix, (image.shape[1], image.shape[0]))
     
-    # Dilation and erosion to close gaps in between object edges
-    kernel = np.ones((1, 1), np.uint8)
-    img_dilation = cv2.dilate(thresh, kernel, iterations=1)
-    img_erosion = cv2.erode(img_dilation, kernel, iterations=1)
+    # Image scaling
+    scaled_image = cv2.resize(rotated_image, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_CUBIC)
+    
+    # Noise removal - Gaussian Blur
+    blurred_image = cv2.GaussianBlur(scaled_image, (5, 5), 0)
+    
+    # Gray scale image
+    gray_image = cv2.cvtColor(blurred_image, cv2.COLOR_BGR2GRAY)
+    
+    # Thresholding or Binarization
+    _, threshold_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    
+    # Dilation
+    kernel = np.ones((3, 3), np.uint8)
+    dilated_image = cv2.dilate(threshold_image, kernel, iterations=1)
 
-    # Additional noise removal
-    noise_removal = cv2.medianBlur(img_erosion, 3)
+    return dilated_image
 
-    return noise_removal
 
 def format_date_range(start_date, end_date):
     
@@ -309,9 +316,17 @@ def match_data_with_ocr(nama_mahasiswa, nama_kompetisi, nama_penyelenggara, tang
         tanda_tangan_results.append(False)
 
     if (not any(mahasiswa_results)) & (not any(kompetisi_results)) & (not any(penyelenggara_results)) & (not (any(tanggal_selesai_results))) & (not any(capaian_results)) & (not any(tanda_tangan_results)):
-        # gambar_rotasi = rotate_image(preprocessed_image)
-        # extracted_text = extract_text_from_image(gambar_rotasi)
-        # result_string = ' '.join(extracted_text)
+        if flag == 0:
+            preprocessed_image = preprocess_for_ocr(file_name)
+            extracted_text = extract_text_from_image(preprocessed_image)
+            result_string = ' '.join(extracted_text)
+        else:
+            extracted_text = extract_text_from_image(file_name)
+            result_string = ' '.join(extracted_text)
+        
+        gambar_rotasi = rotate_image(preprocessed_image)
+        extracted_text = extract_text_from_image(gambar_rotasi)
+        result_string = ' '.join(extracted_text)
                 
     # Mencari Nama Mahasiswa
         pattern_nama_mahasiswa = re.compile(rf'\b{re.escape(nama_mahasiswa)}\b')
