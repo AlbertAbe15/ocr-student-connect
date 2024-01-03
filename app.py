@@ -3,22 +3,21 @@ import requests
 from PIL import Image, ImageFilter
 from datetime import datetime
 from babel.dates import format_date
-import cv2
 import numpy as np
-from datetime import datetime
-import re
-import easyocr
-import os
-from PIL import Image
-from fuzzywuzzy import fuzz
-import pandas as pd
-from pdf2image import convert_from_path
-from pytesseract import image_to_string
+# from datetime import datetime
+# import os
+# import pandas as pd
+# from pdf2image import convert_from_path
 from PIL import Image
 import re
 from fuzzywuzzy import fuzz
 from pdf2image import convert_from_bytes
 import fitz
+from pytesseract import image_to_string
+import easyocr
+from PIL import Image
+import cv2
+
 
 
 app = Flask(__name__)
@@ -324,9 +323,9 @@ def match_data_with_ocr(nama_mahasiswa, nama_kompetisi, nama_penyelenggara, tang
             extracted_text = extract_text_from_image(file_name)
             result_string = ' '.join(extracted_text)
         
-        gambar_rotasi = rotate_image(preprocessed_image)
-        extracted_text = extract_text_from_image(gambar_rotasi)
-        result_string = ' '.join(extracted_text)
+        # gambar_rotasi = rotate_image(preprocessed_image)
+        # extracted_text = extract_text_from_image(gambar_rotasi)
+        # result_string = ' '.join(extracted_text)
                 
     # Mencari Nama Mahasiswa
         pattern_nama_mahasiswa = re.compile(rf'\b{re.escape(nama_mahasiswa)}\b')
