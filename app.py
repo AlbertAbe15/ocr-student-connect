@@ -191,10 +191,10 @@ def format_date_range(start_date, end_date):
     # Check if the start and end dates are in the same month and year
     if start_date_parts[1:] == end_date_parts[1:]:
         # Same month and year
-        return ((f"{start_date_parts[0]}-{end_date_parts[0]} {end_date_parts[1]} {end_date_parts[2]}").lower())
+        return f"{start_date_parts[0]}-{end_date_parts[0]} {end_date_parts[1]} {end_date_parts[2]}".lower()
     else:
         # Different month or year
-        return ((f"{start_date_parts[0]} {start_date_parts[1]}-{end_date_parts[0]} {end_date_parts[1]} {end_date_parts[2]}").lower())
+        return f"{start_date_parts[0]} {start_date_parts[1]}-{end_date_parts[0]} {end_date_parts[1]} {end_date_parts[2]}".lower()
     
 def convert_indonesian_date_to_english(indonesian_date):
     # Kamus nama bulan dalam bahasa Indonesia ke bahasa Inggris
