@@ -4,10 +4,6 @@ from PIL import Image, ImageFilter
 from datetime import datetime
 from babel.dates import format_date
 import numpy as np
-# from datetime import datetime
-# import os
-# import pandas as pd
-# from pdf2image import convert_from_path
 from PIL import Image
 import re
 from fuzzywuzzy import fuzz
