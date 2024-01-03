@@ -58,10 +58,10 @@ API ini merupakan API untuk melakukan verifikasi terhadap dokumen surat tugas da
 
 ```json
 {
-    "pdf_url": "https://drive.google.com/uc?export=download&id=1aYQXKb8J_jDCDLwrhMba_0dnrULZtzuD",
-    "nama_mahasiswa": "elen nova widyarindra",
-    "nrp": "10611710000016",
-    "nama_departemen": "statistika bisnis",
+    "pdf_url": "https://storage-api.its.ac.id/public/8531f465fc3b4491ba9dc36d845059f6/6ca99a49de6612bd1eed30a3b26af092/SuratTugasLombaDiesnatalisFTPUBke23ElvaRifkiFikana",
+    "nama_mahasiswa": "ELVA RIFKI FIKANA",
+    "nrp": "10511710000014",
+    "nama_departemen": "Teknik Instrumentasi",
     "skala" :"nasional"
 }
 ```
