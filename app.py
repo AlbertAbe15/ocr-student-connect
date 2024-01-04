@@ -7,40 +7,41 @@ import numpy as np
 from PIL import Image
 import re
 from fuzzywuzzy import fuzz
-from pdf2image import convert_from_bytes
+from pdf2image import convert_from_bytes, convert_from_path
 import fitz
 from pytesseract import image_to_string
 import easyocr
 from PIL import Image
 import cv2
+import io
 
 
 
 app = Flask(__name__)
 
 def convert_pdf_to_images(url):
+    # Mengunduh konten PDF dari URL
     response = requests.get(url)
     if response.status_code != 200:
         return None, "Tidak berhasil membuka file PDF dari URL yang diberikan"
 
-    pdf_document = fitz.open(stream=response.content, filetype="pdf")
-    images = []
+    # Mengonversi PDF menjadi gambar menggunakan pdf2image
+    images = convert_from_bytes(response.content)
 
-    for page_number in range(len(pdf_document)):
-        page = pdf_document[page_number]
-        pix = page.get_pixmap()
-        img_data = pix.tobytes("png")  # Konversi ke byte array
-        img_np = np.frombuffer(img_data, np.uint8)  # Buat NumPy array dari byte array
-        img_cv2 = cv2.imdecode(img_np, cv2.IMREAD_COLOR)  # Decode ke format gambar OpenCV
+    cv_images = []
+    for image in images:
+        # Mengonversi gambar PIL ke array NumPy
+        img_np = np.array(image)
 
+        # Mengonversi array NumPy ke format gambar OpenCV
+        img_cv2 = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
 
         if img_cv2 is None or img_cv2.size == 0:
             continue
 
-        images.append(img_cv2)
+        cv_images.append(img_cv2)
 
-    pdf_document.close()
-    return images, None
+    return cv_images, None
 
 def download_pdf_from_drive(url):
     response = requests.get(url)
@@ -191,10 +192,10 @@ def format_date_range(start_date, end_date):
     # Check if the start and end dates are in the same month and year
     if start_date_parts[1:] == end_date_parts[1:]:
         # Same month and year
-        return f"{start_date_parts[0]}-{end_date_parts[0]} {end_date_parts[1]} {end_date_parts[2]}".lower()
+        return (f"{start_date_parts[0]}-{end_date_parts[0]} {end_date_parts[1]} {end_date_parts[2]}").lower()
     else:
         # Different month or year
-        return f"{start_date_parts[0]} {start_date_parts[1]}-{end_date_parts[0]} {end_date_parts[1]} {end_date_parts[2]}".lower()
+        return (f"{start_date_parts[0]} {start_date_parts[1]}-{end_date_parts[0]} {end_date_parts[1]} {end_date_parts[2]}").lower()
     
 def convert_indonesian_date_to_english(indonesian_date):
     # Kamus nama bulan dalam bahasa Indonesia ke bahasa Inggris
@@ -542,7 +543,6 @@ def ocr():
     images = convert_pdf_to_img(pdf_content)
     text = convert_image_to_text(images)
 
-    matching_data_surat(text, 'elen nova widyarindra', '10611710000016', 'statistika bisnis', 'nasional')
     hasil_nama_mahasiswa, hasil_nrp, hasil_departemen, hasil_tanda_tangan, hasil_keperluan = matching_data_surat(text, nama_mahasiswa, nrp, nama_departemen, 'skala')
 
     return jsonify({"Nama Mahasiswa": hasil_nama_mahasiswa,
@@ -551,6 +551,6 @@ def ocr():
                     "Tanda Tangan": hasil_tanda_tangan,
                     "Keperluan Lomba": hasil_keperluan})
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from waitress import serve
-    serve(app, host="0.0.0.0", port=5000)
+    serve(app, host="0.0.0.0", port=8080)
