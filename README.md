@@ -1,4 +1,4 @@
-# ocr-student-connect
+# Penjelasan OCR MyITS StudentConnect
 Repository ini merupakan paduan dari penggunaan OCR untuk membantu verifikasi data sertifikat dan surat tugas dari portoflio kompetisi pada MyITS StudentConnect.
 
 Endpoint yang disediakan adalah sebagai berikut
@@ -82,4 +82,35 @@ apabila request pada api/surat_tugas berhasil dijalankan, maka akan mengeluarkan
 }
 ```
 
-   
+# Deploy OCR MyITS StudentConnect mengggunakan Docker
+1. Build image pada Docker menggunakan code berikut
+```bash
+docker build -t namaimage .
+```
+namaimage dapat diganti menggunakan nama image yang ingin digunakan oleh developer
+
+2. Setelah image terbentuk, jalankan OCR tersebut dengan menjalankan image nya terlebih dahulu menggunakan code berikut
+```bash
+docker run -it namaimage sh -p 8080:5050
+```
+Command tersebut akan menjalankan image tersebut pada port 8080 atau 5050
+
+3. Jalankan app.py sebagai main file setelah image docker berjalan
+```bash
+python app.py
+```
+4. app.py telah berhasil dijalankan menggunakan IP yang disediakan oleh Docker. Untuk melihat alamat IP dari sebuah container Docker yang menjalankan aplikasi Flask (app.py), Anda bisa mengikuti langkah-langkah berikut:
+
+> Cari ID Container Docker:
+Pertama, Anda perlu mengetahui ID dari container Docker yang menjalankan aplikasi Flask Anda. Buka terminal dan gunakan perintah berikut untuk melihat semua container yang berjalan:
+```bash
+docker ps
+```
+Perintah ini akan menampilkan daftar container yang aktif, termasuk ID container, nama gambar (image), dan detail lainnya.
+
+> Dapatkan Alamat IP Container:
+Setelah Anda mengetahui ID container, gunakan perintah berikut untuk mendapatkan detail jaringan dari container tersebut, termasuk alamat IP-nya. Ganti container_id dengan ID container yang Anda temukan dari langkah sebelumnya:
+```bash
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_id
+```
+> Perintah ini akan mengembalikan alamat IP dari container Docker tersebut. IP tersebut dapat dijalankan menggunakan port yang telah di-setting awal, yaitu 8080 atau/dan 5000
