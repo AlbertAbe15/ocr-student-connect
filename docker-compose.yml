@@ -1,0 +1,17 @@
+version: '3'
+services:
+
+    myits-ocr:
+        container_name: myits-ocr
+        image: dptsi/myits-ocr:latest
+        ports: ["5000:5000"]
+        environment: 
+            - VIRTUAL_HOST=ocr.local
+            - VIRTUAL_PORT=5000
+            - SELF_SIGNED_HOST=ocr.local
+        networks:
+            - nginx-proxy-network
+
+networks:
+    nginx-proxy-network:
+        external: true
