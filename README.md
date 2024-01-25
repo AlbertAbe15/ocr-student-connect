@@ -37,15 +37,27 @@ apabila request pada api/sertifikat_kompetisi berhasil dijalankan, maka akan men
 4. Tanda Tangan: Hasil verifikasi dari pejabat yang menandatangani sertifikat kompetisi
 5. Capaian: Hasil verifikasi antara hasil capaian yang terdapat pada MyITS StudentConnect dan sertifikat kompetisi
 6. Tanggal Kompetisi: Hasil verifikasi antara tanggal kompetisi yang terdapat pada MyITS StudentConnect dan sertifikat kompetisi
+7. Confidence Nama Mahasiswa: Confidence keakuratan dari penemuan data nama mahasiswa
+7. Confidence Nama Kompetisi: Confidence keakuratan dari penemuan data nama kompetisi
+8. Confidence Nama Penyelenggara: Confidence keakuratan dari penemuan data nama penyelenggara
+9. Confidence Tanda Tangan: Confidence keakuratan dari penemuan data tanda tangan
+10. Confidence Capaian: Confidence keakuratan dari penemuan data capaian
+11. Confidence Tanggal Kompetisi: Confidence keakuratan dari penemuan data tanggal kompetisi
    
 ```json
     {
-        "Capaian": true,
-        "Nama Kompetisi": true,
-        "Nama Mahasiswa": true,
-        "Nama Penyelenggara": false,
-        "Tanda Tangan": true,
-        "Tanggal Kompetisi": false
+    "Capaian": true,
+    "Confidence Capaian": 100,
+    "Confidence Nama Kompetisi": 0,
+    "Confidence Nama Mahasiswa": 100,
+    "Confidence Nama Penyelenggara": 0,
+    "Confidence Tanda Tangan": 0,
+    "Confidence Tanggal Kompetisi": 30,
+    "Nama Kompetisi": false,
+    "Nama Mahasiswa": true,
+    "Nama Penyelenggara": false,
+    "Tanda Tangan": false,
+    "Tanggal Kompetisi": false
     }
 ```
 ### *2. http://127.0.0.1:5000/surat_tugas*
@@ -55,6 +67,7 @@ API ini merupakan API untuk melakukan verifikasi terhadap dokumen surat tugas da
 3. nrp: NRP mahasiswa yang terdaftar pada MyITS StudentConnect
 4. nama_departemen: Nama departemen yang terdaftar pada MyITS StudentConnect
 5. skala: Skala kompetisi yang diikuti oleh mahasiswa
+
 
 ```json
 {
@@ -71,11 +84,21 @@ apabila request pada api/surat_tugas berhasil dijalankan, maka akan mengeluarkan
 3. NRP: Hasil verifikasi antara nama nrp  yang terdapat pada MyITS StudentConnect dan surat tugas
 4. Tanda Tangan: Hasil verifikasi dari pejabat yang menandatangani surat tugas
 5. Keperluan: Hasil verifikasi keperluan surat tugas yang diajukan oleh mahasiswa
+6. Confidence Nama Mahasiswa: Confidence keakuratan dari penemuan data nama mahasiswa
+7. Confidence Departemen: Confidence keakuratan dari penemuan data nama departmen mahasiswa
+8. Confidence NRP: Confidence keakuratan dari penemuan data NRP mahasiswa
+9. Confidence Tanda TanganL Confidence keakuratan dari penemuan data tanda tangan
+10. Confidence Keperluan Lomba: Confidence keakuratan dari penemuan data keperluan lomba
 
 ```json
 {
+    "Confidence Departemen": 100,
+    "Confidence Keperluan Lomba": 100,
+    "Confidence NRP": 100,
+    "Confidence Nama Mahasiswa": 100,
+    "Confidence Tanda Tangan": 0,
     "Departemen": true,
-    "Keperluan Lomba": false,
+    "Keperluan Lomba": true,
     "NRP": true,
     "Nama Mahasiswa": true,
     "Tanda Tangan": false
