@@ -114,7 +114,7 @@ namaimage dapat diganti menggunakan nama image yang ingin digunakan oleh develop
 
 2. Setelah image terbentuk, jalankan OCR tersebut dengan menjalankan image nya terlebih dahulu menggunakan code berikut
 ```bash
-docker run -it namaimage sh -p 8080:5050
+docker run -it -p 8080:5050 namaimage sh
 ```
 Command tersebut akan menjalankan image tersebut pada port 8080 atau 5050
 
