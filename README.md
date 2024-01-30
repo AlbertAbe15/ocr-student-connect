@@ -111,7 +111,7 @@ apabila request pada api/surat_tugas berhasil dijalankan, maka akan mengeluarkan
 sudo apt install docker.io
 ```   
 
-3. Build image pada Docker menggunakan code berikut
+2. Build image pada Docker menggunakan code berikut
 ```bash
 docker build -t namaimage .
 ```
