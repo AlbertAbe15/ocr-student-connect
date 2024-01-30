@@ -3,9 +3,10 @@ FROM python:3.11.6
 WORKDIR /usr/src/app
 
 # Install dependencies
-RUN apt update && apt install -y --no-install-recommends \
+RUN apt update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Copy requirements and install dependencies
 COPY . ./
