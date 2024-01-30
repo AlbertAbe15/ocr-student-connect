@@ -105,40 +105,150 @@ apabila request pada api/surat_tugas berhasil dijalankan, maka akan mengeluarkan
 }
 ```
 
-# Deploy OCR MyITS StudentConnect mengggunakan Docker
-1. Install docker menggunakan code berikut
+# Deploy OCR MyITS StudentConnect pada Ubuntu
+1. Install python menggunakan command berikut
 ```bash
-sudo apt install docker.io
+sudo apt-get install python
 ```   
-
-2. Build image pada Docker menggunakan code berikut
+2. Melakukan installasi library yang digunakan pada program python dengan bantuan library beserta versinya dalam requirements.txt
 ```bash
-docker build -t namaimage .
+pip install --trusted-host=pypi.org --trusted-host=files.pythonhosted.org --user -r requirements.txt 
 ```
-namaimage dapat diganti menggunakan nama image yang ingin digunakan oleh developer
-
-3. Setelah image terbentuk, jalankan OCR tersebut dengan menjalankan image nya terlebih dahulu menggunakan code berikut
+3. Melakukan installasi tambahan OCR untuk mendukung program python
 ```bash
-docker run -it -p 8080:5050 namaimage sh
+apt-get install -y poppler-utils
+apt-get install -y tesseract-ocr
 ```
-Command tersebut akan menjalankan image tersebut pada port 8080 atau 5050
-
 4. Jalankan app.py sebagai main file setelah image docker berjalan
 ```bash
 python app.py
 ```
-5. app.py telah berhasil dijalankan menggunakan IP yang disediakan oleh Docker. Untuk melihat alamat IP dari sebuah container Docker yang menjalankan aplikasi Flask (app.py), Anda bisa mengikuti langkah-langkah berikut:
-
-> Cari ID Container Docker:
-Pertama, Anda perlu mengetahui ID dari container Docker yang menjalankan aplikasi Flask Anda. Buka terminal dan gunakan perintah berikut untuk melihat semua container yang berjalan:
-```bash
-docker ps
-```
-Perintah ini akan menampilkan daftar container yang aktif, termasuk ID container, nama gambar (image), dan detail lainnya.
-
-> Dapatkan Alamat IP Container:
-Setelah Anda mengetahui ID container, gunakan perintah berikut untuk mendapatkan detail jaringan dari container tersebut, termasuk alamat IP-nya. Ganti container_id dengan ID container yang Anda temukan dari langkah sebelumnya:
-```bash
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_id
-```
-> Perintah ini akan mengembalikan alamat IP dari container Docker tersebut. IP tersebut dapat dijalankan menggunakan port yang telah di-setting awal, yaitu 8080 atau/dan 5000
+5. Program telah dapat dijalankan. Berikut merupakan bantuan informasi postman yang digunakan untuk melakukan request
+```json 
+{
+	"info": {
+		"_postman_id": "a1cff0fb-1a33-49aa-a51c-2095665c1227",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17092104"
+	},
+	"item": [
+		{
+			"name": "http://127.0.0.1:5000/surat_tugas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"pdf_url\": \"https://storage-api.its.ac.id/public/8531f465fc3b4491ba9dc36d845059f6/6ca99a49de6612bd1eed30a3b26af092/SuratTugasLombaDiesnatalisFTPUBke23ElvaRifkiFikana\",\n    \"nama_mahasiswa\": \"ELVA RIFKI FIKANA\",\n    \"nrp\": \"10511710000014\",\n    \"nama_departemen\": \"Teknik Instrumentasi\",\n    \"skala\" :\"nasional\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://ocr.its.ac.id:5000/surat_tugas",
+					"protocol": "http",
+					"host": [
+						"ocr",
+						"its",
+						"ac",
+						"id"
+					],
+					"port": "5000",
+					"path": [
+						"surat_tugas"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "http://127.0.0.1:5000/surat_tugas",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pdf_url\": \"https://storage-api.its.ac.id/public/8531f465fc3b4491ba9dc36d845059f6/6ca99a49de6612bd1eed30a3b26af092/SuratTugasLombaDiesnatalisFTPUBke23ElvaRifkiFikana\",\n    \"nama_mahasiswa\": \"ELVA RIFKI FIKANA\",\n    \"nrp\": \"10511710000014\",\n    \"nama_departemen\": \"Teknik Instrumentasi\",\n    \"skala\": \"nasional\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.15.42.225:5000/surat_tugas",
+							"protocol": "http",
+							"host": [
+								"10",
+								"15",
+								"42",
+								"225"
+							],
+							"port": "5000",
+							"path": [
+								"surat_tugas"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Length",
+							"value": "239"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 30 Jan 2024 19:45:59 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "waitress"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Confidence Departemen\": 100,\n    \"Confidence Keperluan Lomba\": 100,\n    \"Confidence NRP\": 100,\n    \"Confidence Nama Mahasiswa\": 100,\n    \"Confidence Tanda Tangan\": 0,\n    \"Departemen\": true,\n    \"Keperluan Lomba\": true,\n    \"NRP\": true,\n    \"Nama Mahasiswa\": true,\n    \"Tanda Tangan\": false\n}"
+				}
+			]
+		},
+		{
+			"name": "http://127.0.0.1:5000/sertifikat_kompetisi",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"image_url\": \"https://storage-api.its.ac.id/public/8531f465fc3b4491ba9dc36d845059f6/e807516deb514ea5adbb3b19bc23d3d0/ACHMADMAULANAHAWESTdikompresi\",\n    \"nama_mahasiswa\": \"ACHMAD MAULANA ALI ULUMUDIN\",\n    \"nama_penyelenggara\": \"FKM UINSU - Health Research Student Association\",\n    \"nama_kompetisi\": \"HAWEST (Hersa Writing Contest)\",\n    \"hasil_capaian\": \"Juara 2/perak\",\n    \"tanggal_mulai\": \"12/08/2021\",\n    \"tanggal_selesai\": \"17/09/2021\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/sertifikat_kompetisi",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"sertifikat_kompetisi"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
+``` 
