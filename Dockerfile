@@ -2,13 +2,8 @@ FROM python:3.11.6
 
 WORKDIR /usr/src/app
 
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-ARG NO_PROXY
-
-ENV HTTP_PROXY=$HTTP_PROXY \
-    HTTPS_PROXY=$HTTPS_PROXY \
-    NO_PROXY=$NO_PROXY
+ENV http_proxy http://ITS-587159-e97f3:d8cdf@proxy.its.ac.id:8080
+ENV https_proxy https://ITS-587159-e97f3:d8cdf@proxy.its.ac.id:8080
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
