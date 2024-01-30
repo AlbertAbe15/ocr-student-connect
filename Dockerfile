@@ -2,9 +2,6 @@ FROM python:3.11.6
 
 WORKDIR /usr/src/app
 
-ENV http_proxy http://ITS-587159-e97f3:d8cdf@proxy.its.ac.id:8080
-ENV https_proxy https://ITS-587159-e97f3:d8cdf@proxy.its.ac.id:8080
-
 # Install dependencies
 RUN apt update && apt install -y --no-install-recommends \
     libgl1 \
