@@ -4,9 +4,6 @@ WORKDIR /usr/src/app
 
 # Install dependencies
 RUN apt update && apt install -y --no-install-recommends \
-    libgl1 \
-    libglib2.0-0 \
-    libgl1-mesa-glx \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
