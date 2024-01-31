@@ -108,7 +108,8 @@ apabila request pada api/surat_tugas berhasil dijalankan, maka akan mengeluarkan
 # Deploy OCR MyITS StudentConnect pada Ubuntu
 1. Install python menggunakan command berikut
 ```bash
-sudo apt-get install python
+sudo apt-get install python3 
+apt install python3-pip
 ```   
 2. Melakukan installasi library yang digunakan pada program python dengan bantuan library beserta versinya dalam requirements.txt
 ```bash
