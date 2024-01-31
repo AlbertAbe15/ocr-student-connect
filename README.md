@@ -106,6 +106,12 @@ apabila request pada api/surat_tugas berhasil dijalankan, maka akan mengeluarkan
 ```
 
 # Deploy OCR MyITS StudentConnect pada Ubuntu
+
+1. Instalasi Depedencies untuk program pada ubuntu menggunakan command berikut
+```bash
+apt install libgl1
+```
+
 1. Install python menggunakan command berikut
 ```bash
 sudo apt-get install python3 
@@ -122,7 +128,7 @@ apt-get install -y tesseract-ocr
 ```
 4. Jalankan app.py sebagai main file setelah image docker berjalan
 ```bash
-python app.py
+python3 app.py
 ```
 5. Program telah dapat dijalankan. Berikut merupakan bantuan informasi postman yang digunakan untuk melakukan request
 ```json 
